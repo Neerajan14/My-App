@@ -3,36 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management App</title>
-
-    <!-- Tailwind via Vite (Laravel recommended) -->
-    @vite('resources/js/app.js')
-
-    <!-- Quick CDN alternative (for testing) -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet"> -->
+    <title>@yield('title', 'Laravel App')</title>
+    @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-100 font-sans min-h-screen">
+<body class="bg-gray-100 min-h-screen flex">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md p-4 mb-6">
-        <div class="container mx-auto flex space-x-4">
-            <a href="{{ route('students.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">Home</a>
-            <a href="{{ route('students.create') }}" class="text-blue-600 hover:text-blue-800 font-semibold">Create Student</a>
-        </div>
-    </nav>
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg flex-shrink-0 hidden md:block">
+        <div class="p-6 font-bold text-xl border-b">MyApp</div>
+        <nav class="p-6 space-y-2">
+            <a href="{{ route('dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-200 {{ request()->is('dashboard') ? 'bg-gray-200' : '' }}">Dashboard</a>
+            <a href="{{ route('students.index') }}" class="block px-4 py-2 rounded hover:bg-gray-200 {{ request()->is('students*') ? 'bg-gray-200' : '' }}">Students</a>
+            <a href="{{ route('teachers.index') }}" class="block px-4 py-2 rounded hover:bg-gray-200 {{ request()->is('teachers*') ? 'bg-gray-200' : '' }}">Teachers</a>
+        </nav>
+    </aside>
 
-    <!-- Success Message -->
-    @if (session('success'))
-        <div class="container mx-auto mb-4">
-            <p class="bg-green-100 text-green-700 p-3 rounded shadow">
-                {{ session('success') }}
-            </p>
-        </div>
-    @endif
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Top Navbar -->
+        <header class="bg-white shadow p-4 flex justify-between items-center">
+            <div class="text-lg font-semibold">@yield('title', 'Dashboard')</div>
+            <div class="flex items-center space-x-4">
+                @auth
+                    <span class="text-gray-700">Hello, {{ auth()->user()->name }}</span>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-blue-500 hover:underline">Login</a>
+                    <a href="{{ route('register') }}" class="text-blue-500 hover:underline">Register</a>
+                @endauth
+            </div>
+        </header>
 
-    <!-- Main Content -->
-    <div class="container mx-auto px-4">
-        @yield('content')
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-auto">
+            @yield('content')
+        </main>
     </div>
 
 </body>
