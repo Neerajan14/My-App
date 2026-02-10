@@ -16,6 +16,17 @@
         <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
     @endif
 
+    <div class="mb-6">
+        <form action="{{ route('teachers.index') }}" method="GET" class="flex gap-2">
+            <input type="text" name="search" placeholder="Search by name, email, or subject..." 
+                   value="{{ $search }}" class="flex-1 border border-gray-300 rounded px-4 py-2">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
+            @if($search)
+                <a href="{{ route('teachers.index') }}" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Clear</a>
+            @endif
+        </form>
+    </div>
+
     <div class="bg-white shadow rounded overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-gray-50">
