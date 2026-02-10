@@ -3,13 +3,21 @@
 @section('content')
 <div class="max-w-6xl mx-auto mt-10 bg-white p-6 rounded-lg shadow">
     <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Students List</h2>
+        <a href="{{ route('students.create') }}" 
+        class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Add New Student</a>
+    </div>
 
-    
-
-<h2 class="text-2xl font-bold text-gray-800">Students List</h2>
-
-    <a href="{{ route('students.create') }}" 
-    class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Add New Student</a>
+    <div class="mb-6">
+        <form action="{{ route('students.index') }}" method="GET" class="flex gap-2">
+            <input type="text" name="search" placeholder="Search by name, email, or roll number..." 
+                   value="{{ $search }}" class="flex-1 border border-gray-300 rounded px-4 py-2">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
+            @if($search)
+                <a href="{{ route('students.index') }}" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Clear</a>
+            @endif
+        </form>
+    </div>
 
 @if($students->count())
 <div class="overflow-x-auto">
