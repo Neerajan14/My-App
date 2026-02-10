@@ -7,10 +7,19 @@ use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $teachers = Teacher::orderBy('created_at', 'desc')->paginate(15);
-        return view('teachers.index', compact('teachers'));
+        $search = $request->input('search');
+        $query = Teacher::query();
+        
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('subject', 'like', '%' . $search . '%');
+        }
+        
+        $teachers = $query->orderBy('created_at', 'desc')->paginate(15);
+        return view('teachers.index', compact('teachers', 'search'));
     }
 
     public function create()
