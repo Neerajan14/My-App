@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         $students = \App\Models\Student::count();
         $teachers = \App\Models\Teacher::count();
-        return view('dashboard', compact('students', 'teachers'));
+        $totalAttendance = \App\Models\Attendance::count();
+        $todayAttendance = \App\Models\Attendance::whereDate('date', today())->count();
+        $presentToday = \App\Models\Attendance::whereDate('date', today())->where('status', 'present')->count();
+        $absentToday = \App\Models\Attendance::whereDate('date', today())->where('status', 'absent')->count();
+        return view('dashboard', compact('students', 'teachers', 'totalAttendance', 'todayAttendance', 'presentToday', 'absentToday'));
     })->name('dashboard');
 
     // Student CRUD routes
@@ -46,4 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::get('teachers/report', [TeacherController::class, 'report'])->name('teachers.report');
     Route::get('teachers/export', [TeacherController::class, 'export'])->name('teachers.export');
     Route::resource('teachers', TeacherController::class);
+
+    // Attendance routes
+    Route::get('attendance/bulk-create', [AttendanceController::class, 'bulkCreate'])->name('attendance.bulk-create');
+    Route::post('attendance/bulk-store', [AttendanceController::class, 'bulkStore'])->name('attendance.bulk-store');
+    Route::resource('attendance', AttendanceController::class);
 });
