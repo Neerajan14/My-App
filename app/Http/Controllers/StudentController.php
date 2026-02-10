@@ -8,10 +8,19 @@ use App\Models\Student;
 class StudentController extends Controller
 {
     // Show all students (index page)
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::all();
-        return view('students.index', compact('students'));
+        $search = $request->input('search');
+        $query = Student::query();
+        
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('roll_number', 'like', '%' . $search . '%');
+        }
+        
+        $students = $query->get();
+        return view('students.index', compact('students', 'search'));
     }
 
     // Show create form
